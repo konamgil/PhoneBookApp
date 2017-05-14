@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
-import com.letscombintest.phonebook.phone.adapter.DataAdapter;
 import com.letscombintest.phonebook.phone.R;
+import com.letscombintest.phonebook.phone.adapter.DataAdapter;
 
 /**
  * Created by konamgil on 2017-05-10.

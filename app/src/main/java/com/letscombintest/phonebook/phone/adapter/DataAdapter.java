@@ -59,47 +59,47 @@ public class DataAdapter
         mDbHelper.close();
     }
 
-    public Cursor getTestData() {
-        try {
-            String sql ="SELECT display_name FROM raw_contacts";
+//    public Cursor getTestData() {
+//        try {
+//            String sql ="SELECT display_name FROM raw_contacts";
 
-            Cursor mCur = mDb.rawQuery(sql, null);
-            if (mCur!=null) {
-                mCur.moveToNext();
-            }
-            return mCur;
-        }
-        catch (SQLException mSQLException) {
-            Log.e(TAG, "getTestData >>"+ mSQLException.toString());
-            throw mSQLException;
-        }
-    }
-
-    public Cursor getNameAndPhone() {
-        try {
-            String sql = "SELECT display_name, normalized_number FROM raw_contacts INNER JOIN phone_lookup ON _id=raw_contact_id";
-            Cursor mCur = mDb.rawQuery(sql, null);
-            if (mCur != null) {
-                mCur.moveToNext();
-            }
-            return mCur;
-        } catch (SQLException mSQLException){
-            Log.e(TAG, "getNameAndPhone >>"+ mSQLException.toString());
-            throw mSQLException;
-        }
-    }
-
-    public Cursor insertPhoneList(){
-        try {
-            String sql = "";
-            Cursor mCur = mDb.rawQuery(sql, null);
-            if (mCur != null) {
-                mCur.moveToNext();
-            }
-            return mCur;
-        }catch (SQLException mSQLException){
-            Log.e(TAG, "insertPhoneList >>"+ mSQLException.toString());
-            throw mSQLException;
-        }
-    }
+//            Cursor mCur = mDb.rawQuery(sql, null);
+//            if (mCur!=null) {
+//                mCur.moveToNext();
+//            }
+//            return mCur;
+//        }
+//        catch (SQLException mSQLException) {
+//            Log.e(TAG, "getTestData >>"+ mSQLException.toString());
+//            throw mSQLException;
+//        }
+//    }
+//
+//    public Cursor getNameAndPhone() {
+//        try {
+//            String sql = "SELECT display_name, normalized_number FROM raw_contacts INNER JOIN phone_lookup ON _id=raw_contact_id";
+//            Cursor mCur = mDb.rawQuery(sql, null);
+//            if (mCur != null) {
+//                mCur.moveToNext();
+//            }
+//            return mCur;
+//        } catch (SQLException mSQLException){
+//            Log.e(TAG, "getNameAndPhone >>"+ mSQLException.toString());
+//            throw mSQLException;
+//        }
+//    }
+//
+//    public Cursor insertPhoneList(){
+//        try {
+//            String sql = "";
+//            Cursor mCur = mDb.rawQuery(sql, null);
+//            if (mCur != null) {
+//                mCur.moveToNext();
+//            }
+//            return mCur;
+//        }catch (SQLException mSQLException){
+//            Log.e(TAG, "insertPhoneList >>"+ mSQLException.toString());
+//            throw mSQLException;
+//        }
+//    }
 }
