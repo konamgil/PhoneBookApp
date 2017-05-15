@@ -51,7 +51,7 @@ public class AllFragment extends Fragment {
     EditText etPhone;
     Button btnSuccess;
     Button btnCancel;
-
+    int pos;
     @Override
     public void onResume() {
         super.onResume();
@@ -119,14 +119,18 @@ public class AllFragment extends Fragment {
                                         String selectedName = listViewItemList.get(position).getName();
                                         String selectedPhone = listViewItemList.get(position).getPhoneNum();
                                         int raw_contact_id2 = listViewItemList.get(position).getRaw_contact_id();
-                                        showDialog(selectedName,selectedPhone,raw_contact_id2);
+                                        int contact_id = listViewItemList.get(position).getContact();
+                                        pos = position;
+                                        showDialog(selectedName,selectedPhone,contact_id,raw_contact_id2);
                                         refreshList();
                                         break;
                                     case R.id.deletePhoneItem:
                                         String name = listViewItemList.get(position).getName();
                                         Toast.makeText(context,"삭제 : " + name,Toast.LENGTH_SHORT).show();
                                         mContact.deleteThisItem(name);
+                                        pos=position;
                                         refreshList();
+                                        listViewItemList.remove(pos);
                                         break;
                                     case R.id.insertPhoneItem:
                                         int raw_contact_id = listViewItemList.get(position).getRaw_contact_id();
@@ -151,8 +155,7 @@ public class AllFragment extends Fragment {
             public void onChange( boolean selfChange ){
                 super.onChange(selfChange);
                 refreshList();
-
-//                Toast.makeText(context,"change",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"change",Toast.LENGTH_SHORT).show();
             }
         };
         cr.registerContentObserver( ContactsContract.Data.CONTENT_URI, true, contentObserver );
@@ -160,9 +163,10 @@ public class AllFragment extends Fragment {
     public void refreshList(){
         ContactAdapter contactAdapter = new ContactAdapter(context);
         allList.setAdapter(contactAdapter);
+        contactAdapter.notifyDataSetChanged();
     }
-
-    public void showDialog( String name, String phone,final int raw_contact_id){
+    //22
+    public void showDialog(final String name, String phone, final int contact_id, final int raw_contact_id){
         final AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         final View innerView = getActivity().getLayoutInflater().inflate(R.layout.dialog_input, null);
         dialog
@@ -194,7 +198,9 @@ public class AllFragment extends Fragment {
         btnSuccess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mContact.insertItem(etName.getText().toString(),etPhone.getText().toString(),raw_contact_id);
+//                mContact.insertItem(etName.getText().toString(),etPhone.getText().toString(),raw_contact_id);
+                mContact.update(etName.getText().toString(), etPhone.getText().toString(), contact_id);
+                listViewItemList.set(pos,new Friend(etName.getText().toString(), etPhone.getText().toString(), null,raw_contact_id, contact_id));
                 refreshList();
                 Toast.makeText(context,"확인",Toast.LENGTH_SHORT).show();
                 alertDialog.dismiss();
@@ -202,6 +208,7 @@ public class AllFragment extends Fragment {
         });
 
         alertDialog.show();
+
     }
     public void showDialog( final int raw_contact_id){
         final AlertDialog.Builder dialog = new AlertDialog.Builder(context);

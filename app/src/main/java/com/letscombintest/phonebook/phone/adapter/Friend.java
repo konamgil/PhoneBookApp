@@ -17,11 +17,13 @@ public class Friend {
 
 
 
-    public Friend(String name, String phoneNum, String photo,int raw_contact_id) {
+    public Friend(String name, String phoneNum, String photo,int raw_contact_id,int contact) {
         this.name = name;
         this.phoneNum = phoneNum;
         this.photo = photo;
         this.raw_contact_id = raw_contact_id;
+        this.contact = contact;
+
     }
     public int getContact() {
         return contact;

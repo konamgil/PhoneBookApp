@@ -7,12 +7,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.letscombintest.phonebook.phone.adapter.Friend;
+import com.letscombintest.phonebook.phone.fragment.AllFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,9 +103,9 @@ public class Contact {
                 if (tempContacts.get(contactId) == null) {
                     // If type email, add all detail, else add name and photo (we don't need number)
                     if (mime.equals(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)) {
-                        tempContacts.put(contactId, new Friend(name, numNo, photo, raw_id));
+                        tempContacts.put(contactId, new Friend(name, numNo, photo, raw_id,contactId));
                     } else {
-                        tempContacts.put(contactId, new Friend(name, null, photo, raw_id));
+                        tempContacts.put(contactId, new Friend(name, null, photo, raw_id,contactId));
                     }
 
                 } else {
@@ -150,6 +152,9 @@ public class Contact {
                 ContactsContract.Contacts.DISPLAY_NAME + "=?",
                 new String[]{name}
         );
+
+//        AllFragment allFragment = new AllFragment();
+//        allFragment.refreshList();
     }
 
 //    public void updateThisItem(String name) {
@@ -179,5 +184,59 @@ public class Contact {
         values.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
         values.put(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, name);
         cr.insert(ContactsContract.Data.CONTENT_URI, values);
+    }
+    public void update(String name, String phoneNum, int ContactId)
+    {
+        int id = ContactId;
+//        String firstname = name;
+        String lastname = name;
+        String number = phoneNum;
+        String photo_uri = "android.resource://com.my.package/drawable/default_photo";
+
+        ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+
+        // Name
+        ContentProviderOperation.Builder builder = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI);
+        builder.withSelection(ContactsContract.Data.CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[]{String.valueOf(id), ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE});
+        builder.withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, lastname);
+//        builder.withValue(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, lastname);
+        ops.add(builder.build());
+
+        // Number
+        builder = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI);
+        builder.withSelection(ContactsContract.Data.CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?"+ " AND " + ContactsContract.CommonDataKinds.Organization.TYPE + "=?", new String[]{String.valueOf(id), ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE, String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)});
+        builder.withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, number);
+//        builder.withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, number);
+        ops.add(builder.build());
+
+
+//        // Picture
+//        try
+//        {
+//            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(photo_uri));
+//            ByteArrayOutputStream image = new ByteArrayOutputStream();
+//            bitmap.compress(Bitmap.CompressFormat.JPEG , 100, image);
+//
+//            builder = ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI);
+//            builder.withSelection(ContactsContract.Data.CONTACT_ID + "=?" + " AND " + ContactsContract.Data.MIMETYPE + "=?", new String[]{String.valueOf(id), ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE});
+//            builder.withValue(ContactsContract.CommonDataKinds.Photo.PHOTO, image.toByteArray());
+//            ops.add(builder.build());
+//        }
+//        catch (Exception e)
+//        {
+//            e.printStackTrace();
+//        }
+
+        // Update
+        try
+        {
+            cr.applyBatch(ContactsContract.AUTHORITY, ops);
+            AllFragment allFragment = new AllFragment();
+            allFragment.refreshList();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }
