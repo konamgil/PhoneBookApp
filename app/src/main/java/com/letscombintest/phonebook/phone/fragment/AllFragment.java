@@ -97,7 +97,8 @@ public class AllFragment extends Fragment {
 
 //        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_list_item_1, arrayList);
         mContact = new Contact(context);
-        listViewItemList = mContact.gettestdata();
+//        listViewItemList = mContact.gettestdata();
+        listViewItemList = new Contact(context).gettestdata();
         contactAdapter = new ContactAdapter(context);
 
         updateContactAdapter();
@@ -117,15 +118,19 @@ public class AllFragment extends Fragment {
                                     case R.id.editPhoneItem:
                                         Toast.makeText(context,"수정",Toast.LENGTH_SHORT).show();
                                         String update = "수정";
+                                        listViewItemList = new Contact(context).gettestdata();
+
                                         String selectedName = listViewItemList.get(position).getName();
                                         String selectedPhone = listViewItemList.get(position).getPhoneNum();
                                         int raw_contact_id2 = listViewItemList.get(position).getRaw_contact_id();
                                         int contact_id = listViewItemList.get(position).getContact();
                                         pos = position;
+
                                         showDialog(selectedName,selectedPhone,contact_id,raw_contact_id2);
                                         refreshList();
                                         break;
                                     case R.id.deletePhoneItem:
+                                        listViewItemList = new Contact(context).gettestdata();
                                         String name = listViewItemList.get(position).getName();
                                         Toast.makeText(context,"삭제 : " + name,Toast.LENGTH_SHORT).show();
                                         mContact.deleteThisItem(name);
@@ -202,6 +207,7 @@ public class AllFragment extends Fragment {
             public void onClick(View v) {
 //                mContact.insertItem(etName.getText().toString(),etPhone.getText().toString(),raw_contact_id);
                 mContact.update(etName.getText().toString(), etPhone.getText().toString(), contact_id);
+                listViewItemList = new Contact(context).gettestdata();
                 listViewItemList.set(pos,new Friend(etName.getText().toString(), etPhone.getText().toString(), null,raw_contact_id, contact_id));
                 refreshList();
                 Toast.makeText(context,"확인",Toast.LENGTH_SHORT).show();
