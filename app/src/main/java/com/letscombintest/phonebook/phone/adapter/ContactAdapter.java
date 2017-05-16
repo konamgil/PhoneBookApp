@@ -26,6 +26,11 @@ public class ContactAdapter extends BaseAdapter {
     public ContactAdapter(Context context) {
         this.context = context;
         Contact mContact= new Contact(context);
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         listViewItemList = mContact.gettestdata();
     }
 
@@ -62,5 +67,9 @@ public class ContactAdapter extends BaseAdapter {
         descTextView.setText(frienditem.getPhoneNum());
 
         return convertView;
+    }
+    public void add(Friend item){
+        listViewItemList.add(item);
+        notifyDataSetChanged();
     }
 }

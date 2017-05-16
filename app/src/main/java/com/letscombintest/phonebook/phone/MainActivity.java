@@ -3,23 +3,19 @@ package com.letscombintest.phonebook.phone;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.design.widget.FloatingActionButton;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import com.letscombintest.phonebook.phone.adapter.PagerAdapter;
-import com.letscombintest.phonebook.phone.fragment.AllFragment;
 
 public class MainActivity extends AppCompatActivity  {
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
@@ -36,9 +32,9 @@ public class MainActivity extends AppCompatActivity  {
     }
 
     private void init() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
-            requestPermissions(new String[]{Manifest.permission.WRITE_CONTACTS}, PERMISSIONS_REQUEST_WRITE_CONTACTS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_CONTACTS}, PERMISSIONS_REQUEST_WRITE_CONTACTS);
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         } else {
             //툴바
@@ -114,16 +110,28 @@ public class MainActivity extends AppCompatActivity  {
 
         return super.onCreateOptionsMenu(menu);
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS ||requestCode == PERMISSIONS_REQUEST_WRITE_CONTACTS ) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED||grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                // Permission is granted
-                init();
-            } else {
-                Toast.makeText(this, "Until you grant the permission, we canot display the names", Toast.LENGTH_SHORT).show();
-            }
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_READ_CONTACTS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    init();
+                } else {
+
+                }
+                return;
+            case PERMISSIONS_REQUEST_WRITE_CONTACTS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    init();
+                } else {
+
+                }
+                return;
         }
+
     }
+
+
 
 }

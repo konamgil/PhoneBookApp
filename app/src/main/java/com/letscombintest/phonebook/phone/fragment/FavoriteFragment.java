@@ -40,9 +40,9 @@ public class FavoriteFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mDbHelper = new DataAdapter(context);
-        mDbHelper.createDatabase();
-        mDbHelper.open();
+//        mDbHelper = new DataAdapter(context);
+//        mDbHelper.createDatabase();
+//        mDbHelper.open();
 
         GridView gridView = (GridView)view.findViewById(R.id.gridView);
     }

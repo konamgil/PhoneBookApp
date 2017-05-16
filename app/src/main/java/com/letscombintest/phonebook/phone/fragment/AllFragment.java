@@ -1,5 +1,6 @@
 package com.letscombintest.phonebook.phone.fragment;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
@@ -129,11 +130,12 @@ public class AllFragment extends Fragment {
                                         Toast.makeText(context,"삭제 : " + name,Toast.LENGTH_SHORT).show();
                                         mContact.deleteThisItem(name);
                                         pos=position;
-                                        refreshList();
                                         listViewItemList.remove(pos);
+                                        refreshList();
                                         break;
                                     case R.id.insertPhoneItem:
                                         int raw_contact_id = listViewItemList.get(position).getRaw_contact_id();
+                                        int contact_id2 = listViewItemList.get(position).getContact();
                                         showDialog(raw_contact_id);
                                         refreshList();
                                         break;
@@ -161,7 +163,7 @@ public class AllFragment extends Fragment {
         cr.registerContentObserver( ContactsContract.Data.CONTENT_URI, true, contentObserver );
     }
     public void refreshList(){
-        ContactAdapter contactAdapter = new ContactAdapter(context);
+     ContactAdapter contactAdapter = new ContactAdapter(context);
         allList.setAdapter(contactAdapter);
         contactAdapter.notifyDataSetChanged();
     }
@@ -210,6 +212,7 @@ public class AllFragment extends Fragment {
         alertDialog.show();
 
     }
+    //insert
     public void showDialog( final int raw_contact_id){
         final AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         final View innerView = getActivity().getLayoutInflater().inflate(R.layout.dialog_input, null);
@@ -236,7 +239,10 @@ public class AllFragment extends Fragment {
         btnSuccess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_CONTACTS}, 200);
                 mContact.insertItem(etName.getText().toString(), etPhone.getText().toString(),raw_contact_id);
+
+//                listViewItemList.add(listViewItemList.size()-1,new Friend(etName.getText().toString(),etPhone.getText().toString(),null,null));
                 refreshList();
                 Toast.makeText(context,"확인",Toast.LENGTH_SHORT).show();
                 alertDialog.dismiss();
